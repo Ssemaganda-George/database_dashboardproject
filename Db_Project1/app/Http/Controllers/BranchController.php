@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Video;
+use App\Models\Member;
 use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -55,7 +57,7 @@ class BranchController extends Controller
 
             $branch->save();
 
-            // Redirect to a success page (modify as needed)
+            // Redirect to a success page
             return redirect()->route('branch')->with('success', 'Branch created successfully');
         } catch (ValidationException $e) {
             return redirect()->route('branch.create')->withErrors($e->validator);
@@ -93,16 +95,7 @@ class BranchController extends Controller
             ];
 
             $branch = Branch::where('MemberNumber', $branch_id)->first();
-            if ($branch) {
-                // Check if there are dependent records in the staff table
-                $dependentStaff = Staff::where('BranchNumber', $branch->BranchNumber)->exists();
-            
-                if ($dependentStaff) {
-                    // If there are dependent records, you may choose to handle this situation
-                    // by redirecting with an error message or performing some other action.
-                    return redirect()->route('branch')->withErrors('Cannot delete branch. Dependent staff records exist.');
-                }
-            }
+
             if ($branch) {
                 $branch->update($newdata);
 
@@ -110,24 +103,33 @@ class BranchController extends Controller
                 return redirect()->route('branch')->with('success', 'Branch updated successfully');
             } else {
                 return redirect()->route('branch.edit')->withErrors('Branch not found');
-            };
+            }
         } catch (ValidationException $e) {
             return redirect()->route('branch.edit', $branch_id)->withErrors($e->validator);
         }
     }
 
-    //delete the branch
+    //delete the branch and associated records
     public function destroy($branch_id)
     {
         $branch = Branch::where('BranchNumber', $branch_id)->first();
 
         if ($branch) {
+            $deletedBranchNumber = $branch->BranchNumber;
+            $deletedBranchAaddress = $branch->Address;
+
+            // Delete associated staff,video and member records associated with the deleted branch.
+            Staff::where('BranchNumber', $branch->BranchNumber)->delete();
+            Video::where('BranchNumber', $branch->BranchNumber)->delete();
+            Member::where('BranchNumber', $branch->BranchNumber)->delete();
+
+            // Delete the branch itself
             $branch->delete();
 
-            // Redirect to a success page (modify as needed)
-            return redirect()->route('branch')->with('success', 'branch deleted successfully');
+            // Redirect to a success page
+            return redirect()->route('branch')->with('success', "Branch $deletedBranchNumber of $deletedBranchAaddress and all associated records deleted successfully");
         } else {
-            return redirect()->route('branch')->withErrors('branch not found');
+            return redirect()->route('branch')->withErrors('Branch not found');
         }
     }
 }
