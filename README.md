@@ -1,5 +1,4 @@
-# database_dashboardproject
-This repo has a dashboard implementation of a database.
+
 # Database Dashboard Implementation
 
 ## Overview
@@ -35,29 +34,22 @@ Before you begin, ensure you have met the following requirements:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/database-dashboard.git
+   https://github.com/Ssemaganda-George/database_dashboardproject.git
 Install Dependencies:
-
-bash
-Copy code
 composer install
+
 Configure Database:
 
 Copy the .env.example file to .env and configure your database connection details.
 Run database migrations:
-bash
-Copy code
 php artisan migrate
+
 Generate Application Key:
-
-bash
-Copy code
 php artisan key:generate
-Start the Development Server:
 
-bash
-Copy code
+Start the Development Server:
 php artisan serve
+
 Access the Dashboard:
 Visit http://localhost:8000 in your web browser.
 
@@ -80,10 +72,6 @@ Contributions are welcome! Please follow the contribution guidelines for details
 License
 This project is licensed under the MIT License.
 
-sql
-Copy code
-
-Please note that you should replace placeholder values such as `yourusername`, `database-dashboard`, and specific commands with the actual details of your project. Additionally, consider adding more details about the database structure, specific features, or any additional setup steps that might be necessary for your implementation.
 
 
 
